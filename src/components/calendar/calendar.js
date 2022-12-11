@@ -69,6 +69,7 @@ function Calendar(
     weekNumber,
     weekPicker,
     rangeHover,
+    renderMonthsYearsToggle,
   },
   outerRef
 ) {
@@ -288,6 +289,7 @@ function Calendar(
       fullYear,
       monthAndYears: getMonthsAndYears(),
       rangeHover,
+      renderMonthsYearsToggle,
     },
     { datePickerProps, DatePicker, ...calendarProps } = arguments[0];
 

@@ -15,6 +15,7 @@ export default function Header({
   isRTL,
   fullYear,
   monthAndYears: [months, years],
+  renderMonthsYearsToggle,
 }) {
   let style = {},
     {
@@ -76,41 +77,69 @@ export default function Header({
             {!hideYear && date.format("YYYY")}
           </div>
         ) : (
-          months.map((month, index) => (
-            <div key={index} className="rmdp-header-values" style={style}>
-              {!hideMonth && (
-                <span
-                  style={{
-                    cursor:
-                      disabled || disableMonthPicker || onlyMonthPicker
-                        ? "default"
-                        : "pointer",
-                  }}
-                  onClick={() =>
-                    !disableMonthPicker && toggle("mustShowMonthPicker")
-                  }
-                >
-                  {month}
-                  {!hideYear && (isRTL ? "،" : ",")}
-                </span>
-              )}
-              {!hideYear && (
-                <span
-                  style={{
-                    cursor:
-                      disabled || disableYearPicker || onlyYearPicker
-                        ? "default"
-                        : "pointer",
-                  }}
-                  onClick={() =>
-                    !disableYearPicker && toggle("mustShowYearPicker")
-                  }
-                >
-                  {years[index]}
-                </span>
-              )}
-            </div>
-          ))
+          months.map((month, index) => {
+            const disabledMonth = !!(disabled || disableMonthPicker)
+            const disabledYear = !!(disabled || disableYearPicker)
+
+            const monthStyle = {
+              cursor: disabledMonth ? "default" : "pointer",
+            }
+
+            const yearStyle = {
+              cursor: disabledYear ? "default" : "pointer",
+            }
+
+            const onMonthClick = () => !disableMonthPicker && toggle("mustShowMonthPicker")
+            const onYearClick = () => !disableYearPicker && toggle("mustShowYearPicker")
+
+            const defaultMonthText = `${month}${!hideYear ? (isRTL ? "،" : ",") : ""}`
+            const defaultYearText = `${years[index]}`
+
+            const monthProps = {
+              style: monthStyle,
+              onClick: onMonthClick,
+              disabled: disabledMonth,
+              defaultText: defaultMonthText,
+              mode: "month",
+              month,
+              year: years[index],
+              pickerShown: !!state?.mustShowMonthPicker,
+            }
+
+            const yearProps = {
+              style: yearStyle,
+              onClick: onYearClick,
+              disabled: disabledYear,
+              defaultText: defaultYearText,
+              mode: "year",
+              month,
+              year: years[index],
+              pickerShown: !!state?.mustShowYearPicker,
+            }
+
+            return (
+              <div key={index} className="rmdp-header-values" style={style}>
+                {!hideMonth && isValidElement(renderMonthsYearsToggle) ? (
+                  cloneElement(renderMonthsYearsToggle, monthProps)
+                ) : renderMonthsYearsToggle instanceof Function ? (
+                  renderMonthsYearsToggle(monthProps)
+                ) : (
+                  <span style={monthStyle} onClick={onMonthClick}>
+                    {defaultMonthText}
+                  </span>
+                )}
+                {!hideYear && isValidElement(renderMonthsYearsToggle) ? (
+                  cloneElement(renderMonthsYearsToggle, yearProps)
+                ) : renderMonthsYearsToggle instanceof Function ? (
+                  renderMonthsYearsToggle(yearProps)
+                ) : (
+                  <span style={yearStyle} onClick={onYearClick}>
+                    {defaultYearText}
+                  </span>
+                )}
+              </div>
+            )
+          })
         )}
         {buttons && getButton("right")}
       </div>

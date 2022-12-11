@@ -1,0 +1,22 @@
+.rmdp-header-values button {
+  padding-right: 12px;
+}
+
+.rmdp-header-values button:after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 50%;
+  right: 2px;
+  transform: translateY(calc(-50% - 1px)) rotate(135deg);
+  width: 4px;
+  height: 4px;
+  border-width: 2px 2px 0 0;
+  border-style: solid;
+  border-color: currentColor;
+  opacity: 0.5;
+}
+
+.rmdp-header-values button.active:after {
+  transform: translateY(-10%) rotate(-45deg);
+}

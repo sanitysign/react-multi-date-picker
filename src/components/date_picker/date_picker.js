@@ -70,6 +70,9 @@ function DatePicker(
     mobileLabels,
     onOpenPickNewDate = true,
     mobileButtons = [],
+    allowInvalidDate = false,
+    parseInputValue,
+    rangeSeparator = " ~ ",
     ...otherProps
   },
   outerRef
@@ -83,7 +86,7 @@ function DatePicker(
     inputRef = useRef(),
     calendarRef = useRef(),
     ref = useRef({}),
-    separator = range || weekPicker ? " ~ " : ", ",
+    separator = range || weekPicker ? String(rangeSeparator) : ", ",
     datePickerProps = arguments[0],
     isMobileMode = isMobile(),
     closeCalendar = useCallback(() => {
@@ -511,14 +514,18 @@ function DatePicker(
     );
   }
 
-  function handleChange(date, force) {
+  function handleChange(date, force, rawDate) {
     if (isMobileMode && !force) return setTemporaryDate(date);
 
     setDate(date);
 
     ref.current = { ...ref.current, date };
 
-    onChange?.(date);
+    /**
+     * we want to differentiate the cases when invalid date is entered in the input and
+     * when no date is entered at all to show the user an appropriate validation message
+     */
+    onChange?.(allowInvalidDate ? rawDate ?? date : date);
 
     if (date) setStringDate(getStringDate(date, separator));
   }
@@ -538,7 +545,7 @@ function DatePicker(
 
     digits = isArray(digits) ? digits : locale.digits;
 
-    if (!value) {
+    if (!value.trim()) {
       setStringDate("");
 
       return handleChange(null);
@@ -552,12 +559,15 @@ function DatePicker(
 
     let newDate;
     /**
-     * Given that the only valid date is the date that has all three values ​​of the day, month, and year.
-     * To generate a new date, we must check whether the day, month, and year
-     * are defined in the format or not.
+     * Allows to provide a custom parsing function, which can be useful if DateObject doesn't support the locale
      */
-    if (/(?=.*Y)(?=.*M)(?=.*D)/.test(format)) {
+    if (typeof parseInputValue === "function") {
+      newDate = parseInputValue(value)
+    } else if (/(?=.*Y)(?=.*M)(?=.*D)/.test(format)) {
       /**
+       * Given that the only valid date is the date that has all three values of the day, month, and year.
+       * To generate a new date, we must check whether the day, month, and year
+       * are defined in the format or not.
        * If the above condition is true,
        * we generate a new date from the input value.
        */
@@ -567,16 +577,16 @@ function DatePicker(
       });
     } else {
       /**
-       * Otherwise, we generate today's date and replace the input value ​​with today's values.
+       * Otherwise, we generate today's date and replace the input value with today's values.
        * For example, if we are only using the TimePicker and the input value follows the format "HH:mm",
-       * if we generate a new date from the format "HH:mm", given that the values ​​of the day, month, and year
+       * if we generate a new date from the format "HH:mm", given that the values of the day, month, and year
        * do not exist in the input value, an invalid date will be generated.
        * Therefore, it is better to generate today's date and replace only the hour and minute with today's values.
        */
       newDate = new DateObject(object).parse(value);
     }
 
-    handleChange(newDate.isValid ? newDate : null);
+    handleChange(newDate.isValid ? newDate : null, false, newDate);
     setStringDate(toLocaleDigits(value, digits));
   }
 

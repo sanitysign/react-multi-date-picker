@@ -1,7 +1,24 @@
-module.exports = (api) => {
-  api.cache(true);
+module.exports = api => {
+  api.cache.using(() => process.env.NODE_ENV)
+
+  const presets = [
+    "@babel/preset-env",
+    [
+      "@babel/preset-react",
+      {
+        development: !api.env("production"),
+        runtime: "automatic",
+      },
+    ],
+  ]
+  const plugins = []
+
+  if (!api.env("production")) {
+    plugins.push("react-refresh/babel")
+  }
 
   return {
-    presets: ["@babel/preset-env", "@babel/preset-react"],
-  };
-};
+    presets,
+    plugins,
+  }
+}

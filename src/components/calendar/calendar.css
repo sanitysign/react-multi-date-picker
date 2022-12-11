@@ -201,9 +201,26 @@
   margin: auto;
 }
 
-.rmdp-header-values span {
+.rmdp-header-values > span {
   padding: 0 5px;
   padding-right: 0;
+}
+
+.rmdp-header-values > button {
+  margin: 0 2px;
+  padding: 2px 5px;
+  background-color: transparent;
+  border: none;
+  line-height: 1;
+  position: relative;
+}
+
+.rmdp-header-values button:focus {
+  outline: none;
+}
+
+.rmdp-header-values button:focus-visible {
+  outline-color: var(--rmdp-primary);
 }
 
 .rmdp-arrow {
