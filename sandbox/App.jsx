@@ -3,7 +3,11 @@ import Datepicker from "../src/index"
 
 import "./Datepicker.scss"
 
+const wait = (ms = 200) => new Promise(res => setTimeout(res, ms))
+
 const getDate = date => date?.toDate() ?? null
+
+let count = 0
 
 const MonthsYearsToggle = ({ disabled, style, onClick, year, month, defaultText, mode, pickerShown }) => (
   <button
@@ -18,6 +22,8 @@ const MonthsYearsToggle = ({ disabled, style, onClick, year, month, defaultText,
 
 const App = () => {
   const ref = useRef()
+  const inputRef = useRef()
+
   const [date, setDate] = useState(null)
 
   useEffect(() => {
@@ -30,6 +36,7 @@ const App = () => {
       <div className="picker-wrap">
         <Datepicker
           ref={ref}
+          inputRef={inputRef}
           format="D MMM YYYY"
           weekStartDayIndex={1}
           range
@@ -38,7 +45,17 @@ const App = () => {
           allowInvalidDate
           value={date}
           renderMonthsYearsToggle={<MonthsYearsToggle />}
+          // onlyMonthPicker
+          onOpenPickNewDate={false}
           // onClose={() => false}
+          onBlur={e => {
+            console.log(e)
+            console.log(inputRef.current)
+          }}
+          // onChanging={async res => {
+          //   await wait(1000)
+          //   if (count++ > 1) return false
+          // }}
           onChange={res => {
             if (Array.isArray(res)) return setDate([getDate(res[0]), getDate(res[1])])
             setDate(getDate(res))

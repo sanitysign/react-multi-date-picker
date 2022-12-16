@@ -70,6 +70,9 @@ function DatePicker(
     mobileLabels,
     onOpenPickNewDate = true,
     mobileButtons = [],
+    inputRef: userInputRef,
+    onChanging,
+    onBlur,
     allowInvalidDate = false,
     parseInputValue,
     rangeSeparator = " ~ ",
@@ -332,6 +335,13 @@ function DatePicker(
     if (outerRef) outerRef.current = element;
   }
 
+  function setInputRefs(element) {
+    inputRef.current = element;
+
+    if (userInputRef instanceof Function) return userInputRef(element);
+    if (userInputRef) userInputRef.current = element;
+  }
+
   function renderInput() {
     if (typeof type === "string") {
       warn([
@@ -339,6 +349,8 @@ function DatePicker(
         "https://shahabyazdi.github.io/react-multi-date-picker/types/",
       ]);
     }
+
+    const additionalProps = typeof onBlur === "function" ? { onBlur } : null;
 
     if (render) {
       let strDate =
@@ -371,7 +383,7 @@ function DatePicker(
     } else {
       return (
         <input
-          ref={inputRef}
+          ref={setInputRefs}
           type="text"
           name={name}
           id={id}
@@ -387,6 +399,7 @@ function DatePicker(
           disabled={disabled ? true : false}
           inputMode={inputMode || (isMobileMode ? "none" : undefined)}
           readOnly={readOnly}
+          {...additionalProps}
         />
       );
     }
@@ -514,8 +527,13 @@ function DatePicker(
     );
   }
 
-  function handleChange(date, force, rawDate) {
+  async function handleChange(date, force, rawDate) {
     if (isMobileMode && !force) return setTemporaryDate(date);
+
+    const dateArg = allowInvalidDate ? rawDate ?? date : date;
+
+    // allows to cancel date selection after ajax validation
+    if (typeof onChanging === "function" && (await onChanging(dateArg)) === false) return;
 
     setDate(date);
 
@@ -525,7 +543,7 @@ function DatePicker(
      * we want to differentiate the cases when invalid date is entered in the input and
      * when no date is entered at all to show the user an appropriate validation message
      */
-    onChange?.(allowInvalidDate ? rawDate ?? date : date);
+    onChange?.(dateArg);
 
     if (date) setStringDate(getStringDate(date, separator));
   }
