@@ -6,7 +6,7 @@
   "types": "index.d.ts",
   "scripts": {
     "start": "cross-env NODE_ENV=development webpack serve --mode development",
-    "build": "rollup -c",
+    "build": "cross-env NODE_ENV=production rollup -c",
     "test": "jest ./test"
   },
   "repository": {
