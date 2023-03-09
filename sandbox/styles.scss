@@ -1,3 +1,7 @@
+* {
+  box-sizing: border-box;
+}
+
 body {
   font-family: sans-serif, Helvetica, Arial;
 }
@@ -22,6 +26,7 @@ h1 {
     min-width: 300px;
 
     input {
+      min-height: 28px;
       width: 100%;
     }
   }

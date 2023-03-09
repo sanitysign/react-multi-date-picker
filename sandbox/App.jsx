@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react"
 import Datepicker from "../src/index"
+// import Toolbar from "../src/plugins/toolbar/toolbar"
 
 import "./Datepicker.scss"
 
@@ -41,25 +42,25 @@ const App = () => {
           weekStartDayIndex={1}
           range
           rangeSeparator=" - "
-          numberOfMonths={2}
+          // numberOfMonths={2}
           allowInvalidDate
           value={date}
           renderMonthsYearsToggle={<MonthsYearsToggle />}
           // onlyMonthPicker
           onOpenPickNewDate={false}
           // onClose={() => false}
-          onBlur={e => {
-            console.log(e)
-            console.log(inputRef.current)
-          }}
+          // onBlur={e => {
+          //   console.log(e)
+          //   console.log(inputRef.current)
+          // }}
           // onChanging={async res => {
           //   await wait(1000)
           //   if (count++ > 1) return false
           // }}
-          onChange={res => {
-            if (Array.isArray(res)) return setDate([getDate(res[0]), getDate(res[1])])
-            setDate(getDate(res))
-          }}
+          // onChange={res => {
+          //   if (Array.isArray(res)) return setDate([getDate(res[0]), getDate(res[1])])
+          //   setDate(getDate(res))
+          // }}
         />
       </div>
     </div>

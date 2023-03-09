@@ -115,3 +115,32 @@
   left: -6px;
   top: 3px;
 }
+
+.rmdp__clear-btn {
+  padding: 0;
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  display: flex;
+  transform: translateY(-50%);
+  cursor: pointer;
+  background-color: transparent;
+  color: #444;
+  line-height: 1;
+  border: none;
+  font-size: 18px;
+}
+
+.rmdp__clear-btn > svg {
+  opacity: 0.2;
+}
+
+.rmdp__clear-btn:focus,
+.rmdp__clear-btn.focus-visible {
+  outline: none;
+}
+
+.rmdp__clear-btn:focus > svg,
+.rmdp__clear-btn.focus-visible > svg {
+  opacity: 1;
+}

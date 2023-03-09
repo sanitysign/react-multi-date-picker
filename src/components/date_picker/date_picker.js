@@ -18,6 +18,7 @@ import check from "../../shared/check";
 import getLocaleName from "../../shared/getLocaleName";
 import toLocaleDigits from "../../shared/toLocaleDigits";
 import isRTL from "../../shared/isRTL";
+import CrossIcon from "../../elements/cross/cross";
 import "./date_picker.css";
 
 function DatePicker(
@@ -76,6 +77,7 @@ function DatePicker(
     allowInvalidDate = false,
     parseInputValue,
     rangeSeparator = " ~ ",
+    clearBtn = true,
     ...otherProps
   },
   outerRef
@@ -381,27 +383,45 @@ function DatePicker(
         </div>
       );
     } else {
+      const withClearBtn = clearBtn && !readOnly && !disabled && editable
+      const additionalStyle = withClearBtn ? {paddingRight: "26px"} : {}
+
       return (
-        <input
-          ref={setInputRefs}
-          type="text"
-          name={name}
-          id={id}
-          title={title}
-          required={required}
-          onFocus={openCalendar}
-          className={inputClass || "rmdp-input"}
-          placeholder={placeholder}
-          value={stringDate}
-          onChange={handleValueChange}
-          style={style}
-          autoComplete="off"
-          disabled={disabled ? true : false}
-          inputMode={inputMode || (isMobileMode ? "none" : undefined)}
-          readOnly={readOnly}
-          {...additionalProps}
-        />
-      );
+        <div style={{ position: "relative" }}>
+          <input
+            ref={setInputRefs}
+            type="text"
+            name={name}
+            id={id}
+            title={title}
+            required={required}
+            onFocus={openCalendar}
+            className={inputClass || "rmdp-input"}
+            placeholder={placeholder}
+            value={stringDate}
+            onChange={handleValueChange}
+            style={{...style, ...additionalStyle}}
+            autoComplete="off"
+            disabled={disabled ? true : false}
+            inputMode={inputMode || (isMobileMode ? "none" : undefined)}
+            readOnly={readOnly}
+            {...additionalProps}
+          />
+
+          {!!withClearBtn && (
+            <button
+              className="rmdp__clear-btn"
+              type="button"
+              onClick={() => {
+                handleChange(multiple ? [] : null)
+                setStringDate("")
+              }}
+            >
+              <CrossIcon className="rmdp__clear-icon" />
+            </button>
+          )}
+        </div>
+      )
     }
   }
 
