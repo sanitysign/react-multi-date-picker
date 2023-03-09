@@ -40,7 +40,8 @@ const App = () => {
           inputRef={inputRef}
           format="D MMM YYYY"
           weekStartDayIndex={1}
-          range
+          // range
+          // editable={false}
           rangeSeparator=" - "
           // numberOfMonths={2}
           allowInvalidDate

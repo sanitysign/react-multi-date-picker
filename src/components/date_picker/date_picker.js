@@ -408,7 +408,7 @@ function DatePicker(
             {...additionalProps}
           />
 
-          {!!withClearBtn && (
+          {!!withClearBtn && !!stringDate?.toString?.() && (
             <button
               className="rmdp__clear-btn"
               type="button"
