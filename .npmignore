@@ -1,4 +1,4 @@
-/src 
+/src
 /screenshot
 /coverage
 /test
@@ -10,3 +10,4 @@ babel.config.js
 .gitignore
 .babelrc
 .vscode
+.idea
