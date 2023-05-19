@@ -1,0 +1,33 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: sans-serif, Helvetica, Arial;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 12px;
+  min-height: 100vh;
+}
+
+h1 {
+  text-align: center;
+  color: var(--rmdp-primary);
+  margin: 0 0 24px;
+}
+
+.picker-wrap {
+  margin-bottom: 32px;
+
+  .rmdp-container {
+    min-width: 300px;
+
+    input {
+      min-height: 28px;
+      width: 100%;
+    }
+  }
+}

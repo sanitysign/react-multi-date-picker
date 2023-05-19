@@ -1,4 +1,4 @@
-declare module "react-multi-date-picker" {
+declare module "@sanitysign/react-multi-date-picker" {
   import React, { HTMLAttributes } from "react";
   import DateObject, { Calendar, Locale } from "react-date-object";
 
@@ -502,8 +502,8 @@ declare module "react-multi-date-picker" {
       input: HTMLElement,
       isTyping: boolean
     ): void | false;
-    dateSeparator?: boolean;
-    multipleRangeSeparator?: boolean;
+    dateSeparator?: string;
+    multipleRangeSeparator?: string;
     type?: string;
   }
 
@@ -519,7 +519,7 @@ declare module "react-multi-date-picker" {
   ): React.ReactElement;
 }
 
-declare module "react-multi-date-picker/plugins/date_panel" {
+declare module "@sanitysign/react-multi-date-picker/plugins/date_panel" {
   import React, { HTMLAttributes } from "react";
   import DateObject from "react-date-object";
 
@@ -546,7 +546,7 @@ declare module "react-multi-date-picker/plugins/date_panel" {
   export default function DatePanel(props: DatePanelProps): React.ReactElement;
 }
 
-declare module "react-multi-date-picker/plugins/date_picker_header" {
+declare module "@sanitysign/react-multi-date-picker/plugins/date_picker_header" {
   import React, { HTMLAttributes } from "react";
   import type { Calendar, Locale } from "react-date-object";
 
@@ -565,9 +565,9 @@ declare module "react-multi-date-picker/plugins/date_picker_header" {
   ): React.ReactElement;
 }
 
-declare module "react-multi-date-picker/plugins/colors" {
+declare module "@sanitysign/react-multi-date-picker/plugins/colors" {
   import { HTMLAttributes } from "react";
-  import type { Plugin } from "react-multi-date-picker";
+  import type { Plugin } from "@sanitysign/react-multi-date-picker";
 
   interface ColorsProps
     extends Omit<HTMLAttributes<HTMLDivElement>, "children"> {
@@ -581,7 +581,7 @@ declare module "react-multi-date-picker/plugins/colors" {
   export default function colors(object?: ColorsProps): Plugin[];
 }
 
-declare module "react-multi-date-picker/plugins/settings" {
+declare module "@sanitysign/react-multi-date-picker/plugins/settings" {
   import React, { HTMLAttributes } from "react";
 
   interface SettingsProps
@@ -641,7 +641,7 @@ declare module "react-multi-date-picker/plugins/settings" {
   export default function Settings(props: SettingsProps): React.ReactElement;
 }
 
-declare module "react-multi-date-picker/plugins/toolbar" {
+declare module "@sanitysign/react-multi-date-picker/plugins/toolbar" {
   import React, { HTMLAttributes } from "react";
 
   interface ToolbarProps
@@ -656,14 +656,14 @@ declare module "react-multi-date-picker/plugins/toolbar" {
   export default function Toolbar(props: ToolbarProps): React.ReactElement;
 }
 
-declare module "react-multi-date-picker/plugins/highlight_weekends" {
+declare module "@sanitysign/react-multi-date-picker/plugins/highlight_weekends" {
   export default function highlightWeekends(weekends?: number[]): {
     type: string;
     fn: Function;
   };
 }
 
-declare module "react-multi-date-picker/plugins/time_picker" {
+declare module "@sanitysign/react-multi-date-picker/plugins/time_picker" {
   import React, { HTMLAttributes } from "react";
 
   interface TimePickerProps
@@ -687,7 +687,7 @@ declare module "react-multi-date-picker/plugins/time_picker" {
   ): React.ReactElement;
 }
 
-declare module "react-multi-date-picker/plugins/analog_time_picker" {
+declare module "@sanitysign/react-multi-date-picker/plugins/analog_time_picker" {
   import React from "react";
 
   interface TimePickerProps {
@@ -709,7 +709,7 @@ declare module "react-multi-date-picker/plugins/analog_time_picker" {
   ): React.ReactElement;
 }
 
-declare module "react-multi-date-picker/plugins/range_picker_footer" {
+declare module "@sanitysign/react-multi-date-picker/plugins/range_picker_footer" {
   import React from "react";
 
   interface FooterProps {
@@ -729,7 +729,7 @@ declare module "react-multi-date-picker/plugins/range_picker_footer" {
   export default function Footer(props: FooterProps): React.ReactElement;
 }
 
-declare module "react-multi-date-picker/components/button" {
+declare module "@sanitysign/react-multi-date-picker/components/button" {
   import React, { HTMLAttributes } from "react";
 
   export default function Buttons(
@@ -737,7 +737,7 @@ declare module "react-multi-date-picker/components/button" {
   ): React.ReactElement;
 }
 
-declare module "react-multi-date-picker/components/input_icon" {
+declare module "@sanitysign/react-multi-date-picker/components/input_icon" {
   import React, { HTMLAttributes } from "react";
 
   export default function InputIcon(
@@ -745,7 +745,7 @@ declare module "react-multi-date-picker/components/input_icon" {
   ): React.ReactElement;
 }
 
-declare module "react-multi-date-picker/components/icon" {
+declare module "@sanitysign/react-multi-date-picker/components/icon" {
   import React, { SVGAttributes } from "react";
 
   export default function Icon(

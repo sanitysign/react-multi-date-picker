@@ -1,5 +1,7 @@
 # DatePicker
 
+This is a fork of awesome [react-multi-date-picker](https://github.com/shahabyazdi/react-multi-date-picker) library. All credits to its authors.
+
 Simple React datepicker component for working with `gregorian`, `persian`, `arabic` and `indian` calendars
 with the ability to select the date in `single`, `multiple`, `range` and `multiple range` modes.
 

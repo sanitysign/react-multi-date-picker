@@ -6,5 +6,6 @@
 /website/.cache
 /plugins
 /components
-.npmignore 
+.npmignore
 .vscode
+.idea
