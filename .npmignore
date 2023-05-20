@@ -10,3 +10,4 @@ babel.config.js
 .gitignore
 .babelrc
 .vscode
+.idea

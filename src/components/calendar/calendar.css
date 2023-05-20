@@ -200,9 +200,25 @@
   margin: auto;
 }
 
-.rmdp-header-values span {
-  padding: 0 5px;
-  padding-right: 0;
+.rmdp-header-values > button {
+  display: inline-block;
+  padding: 0;
+  background-color: transparent;
+  border: none;
+  line-height: 1;
+  position: relative;
+}
+
+.rmdp-header-values > button:nth-of-type(2) {
+  margin-left: 4px;
+}
+
+.rmdp-header-values button:focus {
+  outline: none;
+}
+
+.rmdp-header-values button:focus-visible {
+  outline-color: var(--rmdp-primary);
 }
 
 .rmdp-arrow {

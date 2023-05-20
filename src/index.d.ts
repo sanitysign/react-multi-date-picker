@@ -1,25 +1,39 @@
-import React, { HTMLAttributes } from "react"
-import DateObject, { Calendar, Locale } from "react-date-object"
+import React, { HTMLAttributes } from "react";
+import DateObject, { Calendar as CalendarObject, Locale } from "react-date-object";
 
-export type Value = Date | string | number | DateObject | Date[] | string[] | number[] | DateObject[] | null
+export type Value =
+  | Date
+  | string
+  | number
+  | DateObject
+  | (Date | null)[]
+  | (string | null)[]
+  | (number | null)[]
+  | (DateObject | null)[]
+  | null;
 
-export type FunctionalPlugin = { type: string; fn: Function }
-export type Plugin = React.ReactElement | FunctionalPlugin
+type SingleValue = Date | string | number | DateObject | null;
 
-export type HeaderItem = "MONTH_YEAR" | "YEAR_MONTH" | "LEFT_BUTTON" | "RIGHT_BUTTON"
+export type FunctionalPlugin = { type: string; fn: Function };
+export type Plugin = React.ReactElement | FunctionalPlugin;
+
+export type HeaderItem = "MONTH_YEAR" | "YEAR_MONTH" | "LEFT_BUTTON" | "RIGHT_BUTTON";
+
+export type OnChangeReturn = void | false | Promise<void | false>;
 
 export type CustomComponentProps = {
-  value?: string
-  openCalendar?: () => void
-  onFocus?: () => void
-  handleValueChange?: (e: React.ChangeEvent) => void
-  onChange?: (e: React.ChangeEvent) => void
-  locale?: Locale
-  separator?: string
-}
+  value?: string;
+  openCalendar?: () => void;
+  onFocus?: () => void;
+  onBlur?: (e: React.FocusEvent<any>) => void;
+  handleValueChange?: (e: React.ChangeEvent) => void;
+  onChange?: (e: React.ChangeEvent) => void;
+  locale?: Locale;
+  separator?: string;
+};
 
 export interface CalendarProps extends Omit<HTMLAttributes<HTMLDivElement>, "onChange"> {
-  ref?: React.MutableRefObject<any>
+  ref?: React.ForwardedRef<any>;
   /**
    * @types Date | string | number | DateObject
    * @types Date[] | string[] | number[] | DateObject[]
@@ -27,7 +41,7 @@ export interface CalendarProps extends Omit<HTMLAttributes<HTMLDivElement>, "onC
    * <Calendar value={new Date()} />
    * <DatePicker value={[new Date(), new Date(2020, 2, 12)]} />
    */
-  value?: Value
+  value?: Value;
   /**
    * default calendar is gregorian.
    *
@@ -48,7 +62,7 @@ export interface CalendarProps extends Omit<HTMLAttributes<HTMLDivElement>, "onC
    * import indian from "react-date-object/calendars/indian"
    * <DatePicker calendar={indian} />
    */
-  calendar?: Calendar
+  calendar?: CalendarObject;
   /**
    * default locale is gregorian_en.
    *
@@ -81,7 +95,7 @@ export interface CalendarProps extends Omit<HTMLAttributes<HTMLDivElement>, "onC
    * import gregorian_ar from "react-date-object/locales/gregorian_ar"
    * <DatePicker locale={gregorian_ar} />
    */
-  locale?: Locale
+  locale?: Locale;
   /**
    * @type string
    * @default "YYYY/MM/DD"
@@ -91,9 +105,9 @@ export interface CalendarProps extends Omit<HTMLAttributes<HTMLDivElement>, "onC
    *
    * <DatePicker format="MM-DD-YYYY HH:mm:ss" />
    */
-  format?: string
-  onlyMonthPicker?: boolean
-  onlyYearPicker?: boolean
+  format?: string;
+  onlyMonthPicker?: boolean;
+  onlyYearPicker?: boolean;
   /**
    * @example
    * <Calendar
@@ -103,7 +117,7 @@ export interface CalendarProps extends Omit<HTMLAttributes<HTMLDivElement>, "onC
    *
    * <DatePicker range />
    */
-  range?: boolean
+  range?: boolean;
   /**
    * @example
    * <Calendar
@@ -113,11 +127,11 @@ export interface CalendarProps extends Omit<HTMLAttributes<HTMLDivElement>, "onC
    *
    * <DatePicker multiple />
    */
-  multiple?: boolean
+  multiple?: boolean;
   /**
    * Calendar wrapper className
    */
-  className?: string
+  className?: string;
   /**
    * @see https://shahabyazdi.github.io/react-multi-date-picker/locales/
    * @example
@@ -133,7 +147,7 @@ export interface CalendarProps extends Omit<HTMLAttributes<HTMLDivElement>, "onC
    *   ]}
    * />
    */
-  weekDays?: string[] | Array<string[]>
+  weekDays?: string[] | Array<string[]>;
   /**
    * @see https://shahabyazdi.github.io/react-multi-date-picker/locales/
    * @example
@@ -154,7 +168,7 @@ export interface CalendarProps extends Omit<HTMLAttributes<HTMLDivElement>, "onC
    *  ]}
    * />
    */
-  months?: string[] | Array<string[]>
+  months?: string[] | Array<string[]>;
   /**
    * @example
    * <Calendar
@@ -169,8 +183,8 @@ export interface CalendarProps extends Omit<HTMLAttributes<HTMLDivElement>, "onC
    *  }}
    * />
    */
-  onChange?(selectedDates: DateObject | DateObject[] | null): void | false
-  showOtherDays?: boolean
+  onChange?(selectedDates: DateObject | DateObject[] | null): OnChangeReturn;
+  showOtherDays?: boolean;
   /**
    * the date you set in datepicker as value must be equal or bigger than min date.
    *
@@ -182,7 +196,7 @@ export interface CalendarProps extends Omit<HTMLAttributes<HTMLDivElement>, "onC
    *  minDate="2020/12/05"
    * />
    */
-  minDate?: Date | string | number | DateObject
+  minDate?: Date | string | number | DateObject;
   /**
    * the date you set in datepicker as value must be equal or smaller than max date.
    *
@@ -194,7 +208,7 @@ export interface CalendarProps extends Omit<HTMLAttributes<HTMLDivElement>, "onC
    *  maxDate="2020/12/06"
    * />
    */
-  maxDate?: Date | string | number | DateObject
+  maxDate?: Date | string | number | DateObject;
   /**
    * You can customize your calendar days
    * with the mapDays Prop and create different properties
@@ -213,18 +227,18 @@ export interface CalendarProps extends Omit<HTMLAttributes<HTMLDivElement>, "onC
    * />
    */
   mapDays?(object: {
-    date: DateObject
-    selectedDate: DateObject | DateObject[]
-    currentMonth: object
-    isSameDate(arg1: DateObject, arg2: DateObject): boolean
+    date: DateObject;
+    selectedDate: DateObject | DateObject[];
+    currentMonth: object;
+    isSameDate(arg1: DateObject, arg2: DateObject): boolean;
   }):
     | (HTMLAttributes<HTMLSpanElement> & {
-        disabled?: boolean
-        hidden?: boolean
+        disabled?: boolean;
+        hidden?: boolean;
       })
-    | void
-  disableMonthPicker?: boolean
-  disableYearPicker?: boolean
+    | void;
+  disableMonthPicker?: boolean;
+  disableYearPicker?: boolean;
   /**
    * @example
    * <DatePicker
@@ -232,12 +246,12 @@ export interface CalendarProps extends Omit<HTMLAttributes<HTMLDivElement>, "onC
    *   formattingIgnoreList={["Date", "Time"]}
    * />
    */
-  formattingIgnoreList?: string[]
+  formattingIgnoreList?: string[];
   /**
    * Calendar z-index
    * @default 100
    */
-  zIndex?: number
+  zIndex?: number;
   /**
    * Availble Positions:
    *  - top
@@ -253,7 +267,7 @@ export interface CalendarProps extends Omit<HTMLAttributes<HTMLDivElement>, "onC
    *  ]}
    * />
    */
-  plugins?: (Plugin | Plugin[])[]
+  plugins?: (Plugin | Plugin[])[];
 
   /**
    * In Multiple mode, use this Prop to sort the selected dates.
@@ -262,25 +276,25 @@ export interface CalendarProps extends Omit<HTMLAttributes<HTMLDivElement>, "onC
    *
    * <DatePicker multiple sort />
    */
-  sort?: boolean
-  numberOfMonths?: number
-  currentDate?: DateObject
-  children?: React.ReactNode
-  digits?: string[]
+  sort?: boolean;
+  numberOfMonths?: number;
+  currentDate?: DateObject;
+  children?: React.ReactNode;
+  digits?: string[];
   /**
    * You can set the buttons prop to false to disable the previous & next buttons.
    *
    * @example
    * <Calendar buttons={false} />
    */
-  buttons?: boolean
+  buttons?: boolean;
   /**
    * You can render your favorite element instead of the previous & next buttons.
    *
    * @example
    * <Calendar renderButton={<CustomButton />} />
    */
-  renderButton?: React.ReactElement | Function
+  renderButton?: React.ReactElement | Function;
   /**
    * Use this property to change the start day of the week.
    *
@@ -290,52 +304,52 @@ export interface CalendarProps extends Omit<HTMLAttributes<HTMLDivElement>, "onC
    *
    * <Calendar weekStartDayIndex={2} />
    */
-  weekStartDayIndex?: number
-  disableDayPicker?: boolean
-  onPropsChange?(props: object): void
-  onMonthChange?(date: DateObject): void
-  onYearChange?(date: DateObject): void
-  onFocusedDateChange?(focusedDate: DateObject | undefined, clickedDate: DateObject | undefined): void
-  readOnly?: boolean
-  disabled?: boolean
-  hideMonth?: boolean
-  hideYear?: boolean
-  hideWeekDays?: boolean
-  shadow?: boolean
-  fullYear?: boolean
-  displayWeekNumbers?: boolean
-  weekNumber?: string
-  weekPicker?: boolean
-  rangeHover?: boolean
-  monthYearSeparator?: string
-  formatMonth?: (month: string, year: string) => string
-  formatYear?: (year: string, month: string) => string
-  highlightToday?: boolean
-  headerOrder?: Array<HeaderItem>
+  weekStartDayIndex?: number;
+  disableDayPicker?: boolean;
+  onPropsChange?(props: object): void;
+  onMonthChange?(date: DateObject): void;
+  onYearChange?(date: DateObject): void;
+  onFocusedDateChange?(focusedDate: DateObject | undefined, clickedDate: DateObject | undefined): void;
+  readOnly?: boolean;
+  disabled?: boolean;
+  hideMonth?: boolean;
+  hideYear?: boolean;
+  hideWeekDays?: boolean;
+  shadow?: boolean;
+  fullYear?: boolean;
+  displayWeekNumbers?: boolean;
+  weekNumber?: string;
+  weekPicker?: boolean;
+  rangeHover?: boolean;
+  monthYearSeparator?: string;
+  formatMonth?: (month: string, year: string) => string;
+  formatYear?: (year: string, month: string) => string;
+  highlightToday?: boolean;
+  headerOrder?: Array<HeaderItem>;
 }
 
 export interface DatePickerProps {
-  arrow?: boolean | React.ReactElement
-  arrowClassName?: string
-  arrowStyle?: React.CSSProperties
+  arrow?: boolean | React.ReactElement;
+  arrowClassName?: string;
+  arrowStyle?: React.CSSProperties;
   /**
    * Input name.
    * This feature does not work if you render custom input.
    */
-  name?: string
-  id?: string
-  title?: string
-  required?: boolean
+  name?: string;
+  id?: string;
+  title?: string;
+  required?: boolean;
   /**
    * Input placeholder.
    * This feature does not work if you render custom input.
    */
-  placeholder?: string
+  placeholder?: string;
   /**
    * Input style.
    * This feature does not work if you render custom input.
    */
-  style?: React.CSSProperties
+  style?: React.CSSProperties;
   /**
    * This feature does not work if you render custom input.
    *
@@ -349,11 +363,11 @@ export interface DatePickerProps {
    *
    * Note that when you enter a new className, the default className is automatically `removed`.
    */
-  inputClass?: string
+  inputClass?: string;
   /**
    * This feature does not work if you render custom input.
    */
-  disabled?: boolean
+  disabled?: boolean;
   /**
    * @example
    * <DatePicker
@@ -368,7 +382,7 @@ export interface DatePickerProps {
         handleValueChange: (e: React.ChangeEvent) => void,
         locale: Locale,
         separator: string
-      ) => React.ReactNode)
+      ) => React.ReactNode);
   /**
    * This feature only affects on `input` in `single` mode
    *
@@ -381,17 +395,17 @@ export interface DatePickerProps {
    *
    * @default "text"
    */
-  inputMode?: string
-  scrollSensitive?: boolean
-  hideOnScroll?: boolean
+  inputMode?: string;
+  scrollSensitive?: boolean;
+  hideOnScroll?: boolean;
   /**
    * DatePicker container style.
    */
-  containerStyle?: React.CSSProperties
+  containerStyle?: React.CSSProperties;
   /**
    * DatePicker container className.
    */
-  containerClassName?: string
+  containerClassName?: string;
   /**
    * Availble positions:
    *
@@ -415,80 +429,85 @@ export interface DatePickerProps {
    *   calendarPosition="bottom-start"
    * />
    */
-  calendarPosition?: string
-  animations?: Function[]
+  calendarPosition?: string;
+  animations?: Function[];
   /**
    * This feature only affects on `input` in `single` mode
    */
-  editable?: boolean
+  editable?: boolean;
   /**
    * Set it to false if you want to see selected date(s)
    * that are not in range of min and max dates in calendar.
    * @default true
    */
-  onlyShowInRangeDates?: boolean
+  onlyShowInRangeDates?: boolean;
   /**
    * Return `false` in case you don't want to open Calendar
    */
-  onOpen?(): void | boolean
+  onOpen?(): void | boolean;
   /**
    * Return `false` in case you don't want to close Calendar
    */
-  onClose?(): void | boolean
-  fixMainPosition?: boolean
-  fixRelativePosition?: boolean
-  offsetY?: number
-  offsetX?: number
+  onClose?(): void | boolean;
+  fixMainPosition?: boolean;
+  fixRelativePosition?: boolean;
+  offsetY?: number;
+  offsetX?: number;
   onPositionChange?(data: {
     popper: {
-      top: number
-      bottom: number
-      left: number
-      right: number
-      height: number
-      width: number
-    }
+      top: number;
+      bottom: number;
+      left: number;
+      right: number;
+      height: number;
+      width: number;
+    };
     element: {
-      top: number
-      bottom: number
-      left: number
-      right: number
-      height: number
-      width: number
-    }
+      top: number;
+      bottom: number;
+      left: number;
+      right: number;
+      height: number;
+      width: number;
+    };
     arrow: {
-      top: number
-      bottom: number
-      left: number
-      right: number
-      height: number
-      width: number
-      direction: string
-    }
-    position: string
+      top: number;
+      bottom: number;
+      left: number;
+      right: number;
+      height: number;
+      width: number;
+      direction: string;
+    };
+    position: string;
     scroll: {
-      scrollLeft: number
-      scrollTop: number
-    }
-  }): void
-  mobileLabels?: { OK: string; CANCEL: string }
-  portal?: boolean
-  portalTarget?: HTMLElement
-  onOpenPickNewDate?: boolean
-  mobileButtons?: Array<HTMLAttributes<HTMLButtonElement> & { label: string }>
+      scrollLeft: number;
+      scrollTop: number;
+    };
+  }): void;
+  mobileLabels?: { OK: string; CANCEL: string };
+  portal?: boolean;
+  portalTarget?: HTMLElement;
+  onOpenPickNewDate?: boolean;
+  mobileButtons?: Array<HTMLAttributes<HTMLButtonElement> & { label: string }>;
   onChange?(
     selectedDates: DateObject | DateObject[] | null,
     validatedValue: string | Array<string>,
     input: HTMLElement,
     isTyping: boolean
-  ): void | false
-  dateSeparator?: string
-  multipleRangeSeparator?: string
-  type?: string
+  ): OnChangeReturn;
+  dateSeparator?: string;
+  multipleRangeSeparator?: string;
+  type?: string;
+  inputRef?: React.ForwardedRef<any>;
+  onChanging?(selectedDates: DateObject | DateObject[] | null): OnChangeReturn;
+  parseInputValue?(value: string): SingleValue;
+  allowInvalidDate?: boolean;
+  clearBtn?: boolean;
 }
 
-export { DateObject }
-export function Calendar(props: CalendarProps): React.ReactElement
-export function getAllDatesInRange(range: DateObject[], toDate?: boolean): DateObject[] | Date[]
-export function toDateObject(date: Date, calendar?: Calendar): DateObject
-export default function DatePicker(props: CalendarProps & DatePickerProps): React.ReactElement
+export { DateObject };
+export function Calendar(props: CalendarProps): React.ReactElement;
+export function getAllDatesInRange(range: DateObject[], toDate?: boolean): DateObject[] | Date[];
+export function toDateObject(date: Date, calendar?: CalendarObject): DateObject;
+export default function DatePicker(props: CalendarProps & DatePickerProps): React.ReactElement;

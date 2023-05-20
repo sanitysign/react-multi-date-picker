@@ -1,40 +1,40 @@
 declare module "@sanitysign/react-multi-date-picker" {
   import React, { HTMLAttributes } from "react";
-  import DateObject, { Calendar, Locale } from "react-date-object";
+  import DateObject, { Calendar as CalendarObject, Locale } from "react-date-object";
 
   export type Value =
     | Date
     | string
     | number
     | DateObject
-    | Date[]
-    | string[]
-    | number[]
-    | DateObject[]
+    | (Date | null)[]
+    | (string | null)[]
+    | (number | null)[]
+    | (DateObject | null)[]
     | null;
+
+  type SingleValue = Date | string | number | DateObject | null;
 
   export type FunctionalPlugin = { type: string; fn: Function };
   export type Plugin = React.ReactElement | FunctionalPlugin;
 
-  export type HeaderItem =
-    | "MONTH_YEAR"
-    | "YEAR_MONTH"
-    | "LEFT_BUTTON"
-    | "RIGHT_BUTTON";
+  export type HeaderItem = "MONTH_YEAR" | "YEAR_MONTH" | "LEFT_BUTTON" | "RIGHT_BUTTON";
+
+  export type OnChangeReturn = void | false | Promise<void | false>;
 
   export type CustomComponentProps = {
     value?: string;
     openCalendar?: () => void;
     onFocus?: () => void;
+    onBlur?: (e: React.FocusEvent<any>) => void;
     handleValueChange?: (e: React.ChangeEvent) => void;
     onChange?: (e: React.ChangeEvent) => void;
     locale?: Locale;
     separator?: string;
   };
 
-  export interface CalendarProps
-    extends Omit<HTMLAttributes<HTMLDivElement>, "onChange"> {
-    ref?: React.MutableRefObject<any>;
+  export interface CalendarProps extends Omit<HTMLAttributes<HTMLDivElement>, "onChange"> {
+    ref?: React.ForwardedRef<any>;
     /**
      * @types Date | string | number | DateObject
      * @types Date[] | string[] | number[] | DateObject[]
@@ -63,7 +63,7 @@ declare module "@sanitysign/react-multi-date-picker" {
      * import indian from "react-date-object/calendars/indian"
      * <DatePicker calendar={indian} />
      */
-    calendar?: Calendar;
+    calendar?: CalendarObject;
     /**
      * default locale is gregorian_en.
      *
@@ -184,7 +184,7 @@ declare module "@sanitysign/react-multi-date-picker" {
      *  }}
      * />
      */
-    onChange?(selectedDates: DateObject | DateObject[] | null): void | false;
+    onChange?(selectedDates: DateObject | DateObject[] | null): OnChangeReturn;
     showOtherDays?: boolean;
     /**
      * the date you set in datepicker as value must be equal or bigger than min date.
@@ -310,10 +310,7 @@ declare module "@sanitysign/react-multi-date-picker" {
     onPropsChange?(props: object): void;
     onMonthChange?(date: DateObject): void;
     onYearChange?(date: DateObject): void;
-    onFocusedDateChange?(
-      focusedDate: DateObject | undefined,
-      clickedDate: DateObject | undefined
-    ): void;
+    onFocusedDateChange?(focusedDate: DateObject | undefined, clickedDate: DateObject | undefined): void;
     readOnly?: boolean;
     disabled?: boolean;
     hideMonth?: boolean;
@@ -493,30 +490,29 @@ declare module "@sanitysign/react-multi-date-picker" {
     portal?: boolean;
     portalTarget?: HTMLElement;
     onOpenPickNewDate?: boolean;
-    mobileButtons?: Array<
-      HTMLAttributes<HTMLButtonElement> & { label: string }
-    >;
+    mobileButtons?: Array<HTMLAttributes<HTMLButtonElement> & { label: string }>;
     onChange?(
       selectedDates: DateObject | DateObject[] | null,
       validatedValue: string | Array<string>,
       input: HTMLElement,
       isTyping: boolean
-    ): void | false;
+    ): OnChangeReturn;
     dateSeparator?: string;
     multipleRangeSeparator?: string;
     type?: string;
-  }
+    inputRef?: React.ForwardedRef<any>;
+    onChanging?(selectedDates: DateObject | DateObject[] | null): OnChangeReturn;
+    parseInputValue?(value: string): SingleValue;
+    allowInvalidDate?: boolean;
+    clearBtn?: boolean;
+}
 
-  export { DateObject };
-  export function Calendar(props: CalendarProps): React.ReactElement;
-  export function getAllDatesInRange(
-    range: DateObject[],
-    toDate?: boolean
-  ): DateObject[] | Date[];
-  export function toDateObject(date: Date, calendar?: Calendar): DateObject;
-  export default function DatePicker(
-    props: CalendarProps & DatePickerProps
-  ): React.ReactElement;
+export { DateObject };
+export function Calendar(props: CalendarProps): React.ReactElement;
+export function getAllDatesInRange(range: DateObject[], toDate?: boolean): DateObject[] | Date[];
+export function toDateObject(date: Date, calendar?: CalendarObject): DateObject;
+export default function DatePicker(props: CalendarProps & DatePickerProps): React.ReactElement;
+
 }
 
 declare module "@sanitysign/react-multi-date-picker/plugins/date_panel" {

@@ -17,6 +17,7 @@ import check from "../../shared/check";
 import getLocaleName from "../../shared/getLocaleName";
 import toLocaleDigits from "../../shared/toLocaleDigits";
 import isRTL from "../../shared/isRTL";
+import CrossIcon from "../../elements/cross/cross";
 import "./date_picker.css";
 
 function DatePicker(
@@ -71,6 +72,12 @@ function DatePicker(
     mobileButtons = [],
     dateSeparator,
     multipleRangeSeparator = ",",
+    inputRef: userInputRef,
+    onChanging,
+    onBlur,
+    parseInputValue,
+    allowInvalidDate = false,
+    clearBtn = true,
     ...otherProps
   },
   outerRef
@@ -93,6 +100,14 @@ function DatePicker(
       let input = getInput(inputRef);
 
       if (input) input.blur();
+
+      /*
+        trigger `blur` event when popup is closed, calendar must be closed before `focusout` is triggered, so we use `setTimeout`,
+        note that native `focusout` event will trigger React's `blur` event handler
+      */
+      setTimeout(() => {
+        if (input) input.dispatchEvent(new Event("focusout", { bubbles: true }));
+      })
 
       if (ref.current.mobile) {
         let popper = calendarRef.current.parentNode.parentNode;
@@ -131,6 +146,14 @@ function DatePicker(
         label: toLocale("OK"),
       },
     ];
+
+  /*
+    `onBlur` event should be triggered only when popup is closed, we dispatch `blur` event when popup is closed
+  */
+  const onBlurCb = useCallback(e => {
+    if (typeof onBlur !== "function" || !datePickerRef.current || datePickerRef.current.isOpen) return;
+    onBlur(e);
+  }, [onBlur]);
 
   if (isMobileMode && !ref.current.mobile) {
     ref.current = { ...ref.current, mobile: true };
@@ -359,15 +382,23 @@ function DatePicker(
     if (outerRef) outerRef.current = element;
   }
 
+  function setInputRefs(element) {
+    inputRef.current = element;
+
+    if (typeof userInputRef === "function") return userInputRef(element);
+    if (userInputRef) userInputRef.current = element;
+  }
+
   function renderInput() {
     if (render) {
       return (
-        <div ref={inputRef}>
+        <div ref={setInputRefs}>
           {isValidElement(render)
             ? cloneElement(render, {
                 value: stringDate,
                 openCalendar,
                 onFocus: openCalendar,
+                onBlur: onBlurCb,
                 handleValueChange,
                 onChange: handleValueChange,
                 locale,
@@ -385,25 +416,41 @@ function DatePicker(
         </div>
       );
     } else {
+      const withClearBtn = clearBtn && !readOnly && !disabled && editable;
+      const additionalStyle = withClearBtn ? { paddingRight: "26px" } : null;
+
       return (
-        <input
-          ref={inputRef}
-          type={type || "text"}
-          name={name}
-          id={id}
-          title={title}
-          required={required}
-          onFocus={openCalendar}
-          className={inputClass || "rmdp-input"}
-          placeholder={placeholder}
-          value={stringDate}
-          onChange={handleValueChange}
-          style={style}
-          autoComplete="off"
-          disabled={disabled ? true : false}
-          inputMode={inputMode || (isMobileMode ? "none" : undefined)}
-          readOnly={readOnly}
-        />
+        <div style={{ position: "relative" }}>
+          <input
+            ref={setInputRefs}
+            type={type || "text"}
+            name={name}
+            id={id}
+            title={title}
+            required={required}
+            onFocus={openCalendar}
+            onBlur={onBlurCb}
+            className={inputClass || "rmdp-input"}
+            placeholder={placeholder}
+            value={stringDate}
+            onChange={handleValueChange}
+            style={{...style, ...additionalStyle}}
+            autoComplete="off"
+            disabled={disabled ? true : false}
+            inputMode={inputMode || (isMobileMode ? "none" : undefined)}
+            readOnly={readOnly}
+          />
+
+          {!!withClearBtn && !!stringDate?.toString?.() && (
+            <button
+              className="rmdp__clear-btn"
+              type="button"
+              onClick={() => handleChange(null, undefined, "")}
+            >
+              <CrossIcon className="rmdp__clear-icon" />
+            </button>
+          )}
+        </div>
       );
     }
   }
@@ -532,8 +579,15 @@ function DatePicker(
     );
   }
 
-  function handleChange(date, force, inputValue) {
+  async function handleChange(date, force, inputValue) {
     if (isMobileMode && !force) return setTemporaryDate(date);
+
+    // allows to cancel date selection after ajax validation
+    if (typeof onChanging === "function" && (await onChanging(date)) === false) {
+      setStringDate(stringDate);
+
+      return false;
+    }
 
     let strDate = "";
 
@@ -547,10 +601,10 @@ function DatePicker(
       }
     }
 
-    const mustUpdateState = onChange?.(date, {
+    const mustUpdateState = await onChange?.(date, {
       validatedValue: strDate,
       input: inputRef.current,
-      isTyping: !!inputValue,
+      isTyping: inputValue != null,
     });
 
     if (mustUpdateState === false) {
@@ -560,7 +614,7 @@ function DatePicker(
     }
 
     setDate(date);
-    setStringDate(inputValue || strDate.toString().replace(/\s,\s$/, ""));
+    setStringDate(inputValue ?? strDate.toString().replace(/\s,\s$/, ""));
 
     ref.current = { ...ref.current, date };
   }
@@ -580,10 +634,8 @@ function DatePicker(
 
     digits = isArray(digits) ? digits : locale.digits;
 
-    if (!value) {
-      setStringDate("");
-
-      return handleChange(null);
+    if (!value.trim()) {
+      return handleChange(null, undefined, "");
     }
 
     if (!digits) return;
@@ -605,19 +657,32 @@ function DatePicker(
         .map(getMultipleDates);
     }
 
+    /**
+      we want to differentiate the cases when invalid date is entered in the input and when no date is entered at all
+      to show the user an appropriate validation message, so we check below for `allowInvalidDate` option
+    */
     handleChange(
-      !isArray(date) ? (newDate.isValid ? newDate : null) : newDate,
+      !isArray(date) ? ((newDate.isValid || allowInvalidDate) ? newDate : null) : newDate,
       undefined,
       toLocaleDigits(value, digits)
     );
 
     function getSingleDate(value) {
       /**
-       * Given that the only valid date is the date that has all three values ​​of the day, month, and year.
-       * To generate a new date, we must check whether the day, month, and year
-       * are defined in the format or not.
+       * Allows to provide a custom parsing function, which can be useful if DateObject doesn't support the locale
        */
-      if (/(?=.*Y)(?=.*M)(?=.*D)/.test(format)) {
+      if (typeof parseInputValue === "function") {
+        return new DateObject({
+          ...object,
+          date: parseInputValue(value),
+        });
+
+        /**
+         * Given that the only valid date is the date that has all three values of the day, month, and year.
+         * To generate a new date, we must check whether the day, month, and year
+         * are defined in the format or not.
+         */
+      } else if (/(?=.*Y)(?=.*M)(?=.*D)/.test(format)) {
         /**
          * If the above condition is true,
          * we generate a new date from the input value.
@@ -628,9 +693,9 @@ function DatePicker(
         });
       } else {
         /**
-         * Otherwise, we generate today's date and replace the input value ​​with today's values.
+         * Otherwise, we generate today's date and replace the input value with today's values.
          * For example, if we are only using the TimePicker and the input value follows the format "HH:mm",
-         * if we generate a new date from the format "HH:mm", given that the values ​​of the day, month, and year
+         * if we generate a new date from the format "HH:mm", given that the values of the day, month, and year
          * do not exist in the input value, an invalid date will be generated.
          * Therefore, it is better to generate today's date and replace only the hour and minute with today's values.
          */

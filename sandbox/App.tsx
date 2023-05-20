@@ -1,9 +1,7 @@
 import { useState, useEffect, useRef } from "react"
 import Datepicker from "../src/index"
-// import Toolbar from "../src/plugins/toolbar/toolbar"
+import Toolbar from "../src/plugins/toolbar/toolbar"
 import DateObject from "react-date-object"
-
-import { getAllDatesInRange } from "src"
 
 import "./Datepicker.scss"
 
@@ -13,20 +11,14 @@ const wait = (ms = 200) => new Promise(res => setTimeout(res, ms))
 
 const getDate = (date: DateObject | null) => date?.toDate() ?? null
 
-let count = 0
-const daty = new DateObject({
-  date: new Date("2020-10-15"),
-})
-console.log(daty.toDate())
-
 const App = () => {
-  const ref = useRef<any>()
-  const inputRef = useRef()
+  const pickerRef = useRef<any>()
+  const inputRef = useRef<HTMLInputElement | null>(null)
 
-  const [date, setDate] = useState<DateObject | DateObject[] | null>(null)
+  const [date, setDate] = useState<DateVal | DateVal[]>(null)
 
   useEffect(() => {
-    ref.current.openCalendar()
+    pickerRef.current?.openCalendar?.()
   }, [])
 
   return (
@@ -34,32 +26,43 @@ const App = () => {
       <h1>React-Multi-Date-Picker sandbox</h1>
       <div className="picker-wrap">
         <Datepicker
-          ref={ref}
-          // numberOfMonths={2}
-          // inputRef={inputRef}
+          ref={pickerRef}
+          inputRef={inputRef}
+          value={date}
           format="D MMM YYYY"
           weekStartDayIndex={1}
+          dateSeparator=" - "
+          monthYearSeparator={""}
+          allowInvalidDate
+          portal
+          // clearBtn={false}
+          // numberOfMonths={2}
           // range
           // editable={false}
-          dateSeparator=" - "
-          // numberOfMonths={2}
-          // allowInvalidDate
-          value={date}
           // onlyMonthPicker
-          onOpenPickNewDate={false}
-          monthYearSeparator=""
+          // onOpenPickNewDate={false}
+          onChange={val => {
+            if (Array.isArray(val)) {
+              const start = getDate(val[0])
+              const end = getDate(val[1])
+              console.log(start, end)
+
+              return setDate([start, end])
+            }
+
+            const date = getDate(val)
+            console.log(date)
+            setDate(date)
+          }}
           // onClose={() => false}
           // onBlur={e => {
           //   console.log(e)
-          //   console.log(inputRef.current)
           // }}
-          // onChanging={async res => {
-          //   await wait(100)
+          // onChanging={async date => {
+          //   console.log(date)
+          //   await wait(1000)
           //   if (count++ > 1) return false
           // }}
-          onChange={val => {
-            setDate(date)
-          }}
         />
       </div>
     </div>

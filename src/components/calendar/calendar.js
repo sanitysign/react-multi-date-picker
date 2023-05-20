@@ -437,7 +437,7 @@ function Calendar(
     });
   }
 
-  function handleChange(selectedDate, state) {
+  async function handleChange(selectedDate, state) {
     if (disabled) return;
     //This one must be done before setState
     if (selectedDate || selectedDate === null) {
@@ -447,7 +447,7 @@ function Calendar(
     }
 
     if (selectedDate || selectedDate === null) {
-      const mustUpdateState = onChange?.(selectedDate);
+      const mustUpdateState = await onChange?.(selectedDate);
 
       if (state && mustUpdateState !== false) setState(state);
     } else if (state) {
@@ -618,6 +618,6 @@ function getSelectedDate(value, calendar, locale, format) {
   }
 }
 
-function getValidDivProps({ DatePicker, datePickerProps, ...rest }) {
+function getValidDivProps({ DatePicker, datePickerProps, portal, ...rest }) {
   return rest;
 }

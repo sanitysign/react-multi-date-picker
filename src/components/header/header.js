@@ -108,7 +108,7 @@ export default function Header({
                       {getMonthOrYear(item, month, index)}
                     </Fragment>
                   ))
-                  .reduce((prev, curr) => [prev, getSeparator(), curr])}
+                  .reduce((prev, curr, idx) => [prev, getSeparator(idx), curr])}
             </div>
           ));
         }
@@ -120,26 +120,27 @@ export default function Header({
       return (
         !hideMonth && (
           <>
-            <span
+            <button
+              className={`rmdp-header-button rmdp-header-button--month ${state.mustShowMonthPicker ? "active" : ""}`}
               style={{
                 cursor:
                   disabled || disableMonthPicker || onlyMonthPicker
                     ? "default"
                     : "pointer",
               }}
-              onClick={() =>
-                !disableMonthPicker && toggle("mustShowMonthPicker")
-              }
+              onClick={() => !disableMonthPicker && toggle("mustShowMonthPicker")}
+              type="button"
             >
               {getMonth(month, years[index])}
-            </span>
+            </button>
           </>
         )
       );
     } else {
       return (
         !hideYear && (
-          <span
+          <button
+            className={`rmdp-header-button rmdp-header-button--month ${state.mustShowYearPicker ? "active" : ""}`}
             style={{
               cursor:
                 disabled || disableYearPicker || onlyYearPicker
@@ -147,24 +148,17 @@ export default function Header({
                   : "pointer",
             }}
             onClick={() => !disableYearPicker && toggle("mustShowYearPicker")}
+            type="button"
           >
             {getYear(years[index], month)}
-          </span>
+          </button>
         )
       );
     }
   }
 
-  function getSeparator() {
-    return !monthYearSeparator ? (
-      isRTL ? (
-        "،"
-      ) : (
-        ","
-      )
-    ) : (
-      <span>{monthYearSeparator}</span>
-    );
+  function getSeparator(idx) {
+    return monthYearSeparator == null ? (isRTL ? "،" : ",") : monthYearSeparator ?? <span key={idx}>{monthYearSeparator}</span>;
   }
 
   function getButton(direction) {

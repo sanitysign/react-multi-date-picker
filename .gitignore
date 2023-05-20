@@ -9,3 +9,4 @@
 .npmignore
 .vscode
 .idea
+*.ignore*
