@@ -159,7 +159,7 @@ export default function DayPicker({
     return showOtherDays;
   }
 
-  function selectDay(
+  async function selectDay(
     { date: dateObject, current },
     monthIndex,
     numberOfMonths
@@ -191,7 +191,7 @@ export default function DayPicker({
 
     [selectedDate, focused] = selectDate(dateObject, sort, state);
 
-    onChange(selectedDate, {
+    await onChange(selectedDate, {
       ...state,
       date,
       focused,

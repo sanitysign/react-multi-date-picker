@@ -501,7 +501,7 @@ declare module "@sanitysign/react-multi-date-picker" {
     multipleRangeSeparator?: string;
     type?: string;
     inputRef?: React.ForwardedRef<any>;
-    onChanging?(selectedDates: DateObject | DateObject[] | null): OnChangeReturn;
+    onChanging?(selectedDates: DateObject | DateObject[] | null): void | boolean | Promise<void | boolean>;
     parseInputValue?(value: string): SingleValue;
     allowInvalidDate?: boolean;
     clearBtn?: boolean;

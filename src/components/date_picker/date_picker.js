@@ -728,7 +728,7 @@ function DatePicker(
   }
 
   function handleFocusedDate(focusedDate, clickedDate) {
-    if (!isArray(ref.current.date) && clickedDate && !isMobileMode) {
+    if (!isArray(ref.current.date) && !range && clickedDate && !isMobileMode) {
       closeCalendar();
     }
 

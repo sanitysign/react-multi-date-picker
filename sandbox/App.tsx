@@ -59,9 +59,10 @@ const App = () => {
           //   console.log(e)
           // }}
           // onChanging={async date => {
-          //   console.log(date)
-          //   await wait(1000)
-          //   if (count++ > 1) return false
+          //   await wait(300)
+          //   const res = Math.random() > 0.5
+          //   console.log(date, res)
+          //   return res
           // }}
         />
       </div>

@@ -618,6 +618,6 @@ function getSelectedDate(value, calendar, locale, format) {
   }
 }
 
-function getValidDivProps({ DatePicker, datePickerProps, portal, ...rest }) {
+function getValidDivProps({ DatePicker, datePickerProps, portal, containerStyle, ...rest }) {
   return rest;
 }
