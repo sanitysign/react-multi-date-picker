@@ -437,7 +437,21 @@ function Calendar(
     });
   }
 
-  async function handleChange(selectedDate, state) {
+  function handleNativeDate(date) {
+    if (Array.isArray(date)) {
+      return date.map(it => it instanceof Date ? new DateObject({ date: it, calendar, locale, format }) : it)
+    }
+
+    return date instanceof Date ? new DateObject({ date: date, calendar, locale, format }) : date
+  }
+
+  async function handleChange(_selectedDate, _state) {
+    const selectedDate = handleNativeDate(_selectedDate)
+
+    const state = _state ? {..._state} : _state
+
+    if (state?.selectedDate) state.selectedDate = handleNativeDate(state.selectedDate)
+
     if (disabled) return;
     //This one must be done before setState
     if (selectedDate || selectedDate === null) {
