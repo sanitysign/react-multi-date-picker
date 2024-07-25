@@ -3,13 +3,38 @@ import Datepicker from "../src/index"
 import Toolbar from "../src/plugins/toolbar/toolbar"
 import DateObject from "react-date-object"
 
+import Picker from "./Datepicker.ignore/Datepicker"
+import DatePresets from "./Datepicker.ignore/DatePresets"
+
 import "./Datepicker.scss"
 
 type DateVal = Date | null
 
 const wait = (ms = 200) => new Promise(res => setTimeout(res, ms))
 
-const getDate = (date: DateObject | null) => date?.toDate() ?? null
+const getDate = (date: Date | DateObject | null) => {
+  if (date instanceof Date) return date
+  return date?.toDate() ?? null
+}
+
+// const DatePresets = (props: any) => {
+//   const { handleChange, state, DatePicker } = props
+
+//   return (
+//     <button
+//       onClick={() => {
+//         // const selectedDate = new DateObject()
+//         const selectedDate = [new Date("2022-10-12"), new Date()]
+//         // console.log(selectedDate?.toDate())
+
+//         handleChange(selectedDate, { ...state, selectedDate })
+//       }}
+//       type="button"
+//     >
+//       Button
+//     </button>
+//   )
+// }
 
 const App = () => {
   const pickerRef = useRef<any>()
@@ -20,6 +45,13 @@ const App = () => {
   useEffect(() => {
     pickerRef.current?.openCalendar?.()
   }, [])
+
+  // const pl = (
+  //   <DatePresets
+  //     // position="left"
+  //     // isActive={(args) => console.log(args)}
+  //   />
+  // )
 
   return (
     <div className="container">
@@ -35,9 +67,10 @@ const App = () => {
           monthYearSeparator={""}
           allowInvalidDate
           portal
+          // plugins={[pl]}
           // clearBtn={false}
           // numberOfMonths={2}
-          // range
+          range
           // editable={false}
           // onlyMonthPicker
           // onOpenPickNewDate={false}
@@ -51,7 +84,7 @@ const App = () => {
             }
 
             const date = getDate(val)
-            console.log(date)
+            // console.log(date)
             setDate(date)
           }}
           // onClose={() => false}
@@ -64,6 +97,35 @@ const App = () => {
           //   console.log(date, res)
           //   return res
           // }}
+        />
+        <Picker
+          value={date}
+          onChange={val => {
+            console.log(val)
+            setDate(val)
+          }}
+          // plugins={[
+          //   <DatePresets
+          //     position="left"
+          //     // isActive={(args) => console.log(args)}
+          //   />,
+          // ]}
+          // ref={ref}
+          // pickerRef={pickerRef}
+          // onBlur={e => {
+          //   console.log(e)
+          // }}
+          // onBeforeChange={async date => {
+          //   console.log(date)
+          //   await wait(1000)
+          //   if (count++ > 1) return false
+          // }}
+          numberOfMonths={2}
+          // editable={false}
+          range
+          // onClose={() => false}
+          // portal
+          // className="rmdp-input"
         />
       </div>
     </div>

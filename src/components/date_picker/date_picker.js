@@ -78,6 +78,7 @@ function DatePicker(
     parseInputValue,
     allowInvalidDate = false,
     clearBtn = true,
+    ClearBtnComponent,
     ...otherProps
   },
   outerRef
@@ -434,24 +435,28 @@ function DatePicker(
             placeholder={placeholder}
             value={stringDate}
             onChange={handleValueChange}
-            style={{...style, ...additionalStyle}}
+            style={{ ...style, ...additionalStyle }}
             autoComplete="off"
             disabled={disabled ? true : false}
             inputMode={inputMode || (isMobileMode ? "none" : undefined)}
             readOnly={readOnly}
           />
 
-          {!!withClearBtn && !!stringDate?.toString?.() && (
-            <button
-              className="rmdp__clear-btn"
-              type="button"
-              onClick={() => handleChange(null, undefined, "")}
-            >
-              <CrossIcon className="rmdp__clear-icon" />
-            </button>
-          )}
+          {!!withClearBtn &&
+            !!stringDate?.toString?.() &&
+            (ClearBtnComponent ? (
+              <ClearBtnComponent className="rmdp__clear-btn" onClick={() => handleChange(null, undefined, "")} />
+            ) : (
+              <button
+                className="rmdp__clear-btn"
+                type="button"
+                onClick={() => handleChange(null, undefined, "")}
+              >
+                <CrossIcon className="rmdp__clear-icon" />
+              </button>
+            ))}
         </div>
-      );
+      )
     }
   }
 
