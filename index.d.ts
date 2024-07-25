@@ -505,6 +505,7 @@ declare module "@sanitysign/react-multi-date-picker" {
     parseInputValue?(value: string): SingleValue;
     allowInvalidDate?: boolean;
     clearBtn?: boolean;
+    ClearBtnComponent?: (props: { onClick: () => void, className: string }) => React.ReactNode;
 }
 
 export { DateObject };
